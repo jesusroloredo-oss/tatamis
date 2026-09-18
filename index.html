@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -20,18 +20,15 @@
             background-color: #f3f4f6;
         }
 
-        /* Sombra para mejorar la legibilidad de los nombres en el tatami */
         .text-shadow {
             text-shadow: 1px 1px 3px rgba(0,0,0,0.8), 0 0 5px rgba(0,0,0,0.6);
         }
 
-        /* Slots (huecos) de la cuadrícula de 4x4 */
         .slot {
             min-height: 380px;
             transition: border-color 0.2s, background-color 0.2s;
         }
 
-        /* Líneas blancas del área de combate (Kumite) */
         .linea-kumite {
             position: absolute;
             width: 4px;
@@ -43,17 +40,8 @@
         .linea-izquierda { left: 18%; }
         .linea-derecha { right: 18%; }
 
-        /* Icono de arrastre */
-        .drag-handle {
-            cursor: grab;
-        }
-        .drag-handle:active {
-            cursor: grabbing;
-        }
-
-        /* Reglas de exportación para limpiar la imagen capturada */
-        body.export-mode .inputs-container,
-        body.export-mode .drag-handle {
+        /* Estilos específicos para la captura de pantalla */
+        body.export-mode .inputs-container {
             display: none !important;
         }
         
@@ -78,8 +66,8 @@
                 <span>🥋</span> Distribución de Tatamis
             </h1>
             
-            <div class="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
-                <div class="w-full sm:w-48">
+            <div class="flex flex-wrap sm:flex-nowrap gap-3 w-full md:w-auto">
+                <div class="w-full sm:w-32">
                     <select id="select-tatamis" class="w-full border-gray-300 rounded-lg shadow-sm border p-2.5 focus:ring-blue-500 focus:border-blue-500 outline-none">
                         <option value="1">1 Tatami</option>
                         <option value="2">2 Tatamis</option>
@@ -93,18 +81,19 @@
                         <option value="10">10 Tatamis</option>
                         <option value="11">11 Tatamis</option>
                         <option value="12">12 Tatamis</option>
-                        <option value="13">13 Tatamis</option>
-                        <option value="14">14 Tatamis</option>
-                        <option value="15">15 Tatamis</option>
-                        <option value="16">16 Tatamis</option>
                     </select>
                 </div>
                 
-                <button id="btn-generar" class="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 px-6 rounded-lg shadow transition-colors">
+                <button id="btn-generar" class="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 px-4 rounded-lg shadow transition-colors">
                     Generar Tatamis
                 </button>
+
+                <button id="btn-abrir-modal" class="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 px-4 rounded-lg shadow transition-colors flex items-center justify-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"></path><path d="M12 12v9"></path><path d="m8 17 4 4 4-4"></path></svg>
+                    Ordenar Tatamis
+                </button>
                 
-                <button id="btn-descargar" class="w-full sm:w-auto bg-green-600 hover:bg-green-700 text-white font-semibold py-2.5 px-6 rounded-lg shadow transition-colors flex items-center justify-center gap-2">
+                <button id="btn-descargar" class="w-full sm:w-auto bg-green-600 hover:bg-green-700 text-white font-semibold py-2.5 px-4 rounded-lg shadow transition-colors flex items-center justify-center gap-2">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
                     Descargar Foto
                 </button>
@@ -123,7 +112,7 @@
                     <button id="btn-cargar-staff" class="bg-gray-800 hover:bg-gray-900 text-white font-semibold py-2 px-4 rounded-lg text-sm transition-colors shadow">
                         Cargar Lista
                     </button>
-                    <!-- Contenedor donde aparecerán las etiquetas de personal -->
+                    <!-- Contenedor de etiquetas -->
                     <div id="staff-badges" class="flex flex-wrap gap-2 w-full">
                         <span class="text-gray-400 text-sm italic">Carga la lista para ver al personal aquí. Se tacharán al asignarlos a un tatami.</span>
                     </div>
@@ -134,9 +123,34 @@
 
     <!-- Área de Captura (Esto ES lo que sale en la foto) -->
     <div class="max-w-[1400px] w-full bg-white rounded-2xl shadow-sm p-4 overflow-hidden">
-        <!-- Cuadrícula 4x4 (16 slots fijos) -->
+        <!-- Cuadrícula 4x4 (16 slots fijos) - SIN ARRASTRE -->
         <div id="capture-area" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 p-4 rounded-xl">
             <!-- Los 16 slots se inyectarán aquí -->
+        </div>
+    </div>
+
+    <!-- MODAL PARA ORDENAR TATAMIS -->
+    <div id="modal-ordenar" class="fixed inset-0 bg-gray-900 bg-opacity-60 hidden z-50 flex items-center justify-center backdrop-blur-sm">
+        <div class="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-lg mx-4">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold text-gray-800">Organizar Pabellón</h3>
+                <button id="btn-cerrar-modal-x" class="text-gray-400 hover:text-gray-700 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+            </div>
+            <p class="text-sm text-gray-500 mb-6">Arrastra los tatamis a los huecos correspondientes para simular la distribución real del recinto deportivo.</p>
+            
+            <!-- Mini Cuadrícula -->
+            <div class="bg-gray-100 p-4 rounded-xl border border-gray-200">
+                <div id="mini-grid" class="grid grid-cols-4 gap-2">
+                    <!-- Los 16 mini-slots se generan en JS -->
+                </div>
+            </div>
+
+            <div class="mt-6 flex justify-end gap-3">
+                <button id="btn-cancelar-modal" class="px-5 py-2.5 bg-white border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors">Cancelar</button>
+                <button id="btn-aplicar-orden" class="px-5 py-2.5 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 shadow transition-colors">Aplicar Distribución</button>
+            </div>
         </div>
     </div>
 
@@ -147,19 +161,23 @@
             const btnDescargar = document.getElementById('btn-descargar');
             const selectTatamis = document.getElementById('select-tatamis');
             
-            // Elementos del Personal
+            const btnAbrirModal = document.getElementById('btn-abrir-modal');
+            const btnCerrarModalX = document.getElementById('btn-cerrar-modal-x');
+            const btnCancelarModal = document.getElementById('btn-cancelar-modal');
+            const btnAplicarOrden = document.getElementById('btn-aplicar-orden');
+            const modalOrdenar = document.getElementById('modal-ordenar');
+            const miniGrid = document.getElementById('mini-grid');
+
             const staffTextarea = document.getElementById('staff-textarea');
             const btnCargarStaff = document.getElementById('btn-cargar-staff');
             const staffBadgesContainer = document.getElementById('staff-badges');
             let staffList = [];
 
-            // 1. Lógica del Personal Disponible
             btnCargarStaff.addEventListener('click', () => {
                 const text = staffTextarea.value;
-                // Separar por líneas, quitar espacios vacíos y filtrar líneas en blanco
                 staffList = text.split('\n').map(n => n.trim()).filter(n => n.length > 0);
                 renderStaffBadges();
-                checkStaffCrossOut(); // Comprobar por si ya hay gente asignada
+                checkStaffCrossOut();
             });
 
             function renderStaffBadges() {
@@ -168,70 +186,49 @@
                     staffBadgesContainer.innerHTML = '<span class="text-gray-400 text-sm italic">Lista vacía.</span>';
                     return;
                 }
-
                 staffList.forEach(name => {
                     const badge = document.createElement('span');
-                    // Estilos por defecto (no tachado)
                     badge.className = 'staff-badge bg-blue-100 text-blue-800 border border-blue-200 text-sm font-medium px-2.5 py-1 rounded-md transition-all duration-300';
                     badge.textContent = name;
                     staffBadgesContainer.appendChild(badge);
                 });
             }
 
-            // 2. Función de tachado automático
             function checkStaffCrossOut() {
-                // Obtener TODO el texto de todos los inputs de los tatamis
                 const allInputs = document.querySelectorAll('.tatami-input');
                 let globalText = '';
                 allInputs.forEach(inp => {
                     globalText += ' ' + inp.value.toLowerCase();
                 });
 
-                // Revisar cada etiqueta de personal
                 const badges = document.querySelectorAll('.staff-badge');
                 badges.forEach(badge => {
                     const name = badge.textContent.toLowerCase();
-                    
-                    // Si el nombre del badge está contenido en lo que se ha escrito en los tatamis...
                     if (globalText.includes(name)) {
-                        // Tachar visualmente
                         badge.classList.remove('bg-blue-100', 'text-blue-800', 'border-blue-200');
                         badge.classList.add('bg-gray-100', 'text-gray-400', 'line-through', 'border-gray-200');
                     } else {
-                        // Restaurar (no tachado)
                         badge.classList.add('bg-blue-100', 'text-blue-800', 'border-blue-200');
                         badge.classList.remove('bg-gray-100', 'text-gray-400', 'line-through', 'border-gray-200');
                     }
                 });
             }
 
-            // 3. Inicializar los 16 huecos (Grid 4x4)
             function inicializarSlots() {
                 captureArea.innerHTML = '';
                 for (let i = 1; i <= 16; i++) {
                     const slot = document.createElement('div');
+                    // Slots fijos, SIN drag-handle ni SortableJS
                     slot.className = 'slot border-2 border-dashed border-gray-300 rounded-xl p-2 flex flex-col gap-2 bg-gray-50 bg-opacity-40';
                     slot.id = `slot-${i}`;
                     captureArea.appendChild(slot);
-
-                    // Hacer cada hueco arrastrable
-                    new Sortable(slot, {
-                        group: 'shared',
-                        animation: 150,
-                        handle: '.drag-handle',
-                        ghostClass: 'opacity-40',
-                        fallbackOnBody: true,
-                        swapThreshold: 0.65
-                    });
                 }
             }
 
-            // 4. Generar tarjetas de Tatamis
             function generarTatamis() {
                 const cantidad = parseInt(selectTatamis.value);
                 const slots = document.querySelectorAll('.slot');
                 
-                // Limpiar todos los slots antes de generar
                 slots.forEach(slot => { slot.innerHTML = ''; });
 
                 for (let i = 1; i <= cantidad; i++) {
@@ -239,33 +236,21 @@
                         <div class="tarjeta-tatami bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm flex flex-col h-full" data-id="${i}">
                             <div class="bg-gray-100 px-3 py-2.5 flex items-center justify-between border-b border-gray-200">
                                 <span class="font-bold text-gray-700 text-sm">Tatami ${i}</span>
-                                <div class="drag-handle text-gray-400 hover:text-gray-600 transition-colors p-1">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="12" r="1"></circle><circle cx="9" cy="5" r="1"></circle><circle cx="9" cy="19" r="1"></circle><circle cx="15" cy="12" r="1"></circle><circle cx="15" cy="5" r="1"></circle><circle cx="15" cy="19" r="1"></circle></svg>
-                                </div>
                             </div>
 
                             <div class="p-3 flex-grow flex items-center justify-center bg-gray-50">
-                                <!-- Borde Rojo exterior -->
                                 <div class="w-full aspect-square max-w-[220px] bg-red-600 rounded-lg p-3 relative shadow-inner">
-                                    <!-- Centro Azul interior -->
                                     <div class="w-full h-full bg-blue-600 rounded relative flex items-center justify-center overflow-hidden shadow">
-                                        
-                                        <!-- Marca de agua numérica -->
                                         <div class="absolute inset-0 flex items-center justify-center pointer-events-none select-none">
                                             <span class="text-[7rem] font-black text-white opacity-20">${i}</span>
                                         </div>
-
                                         <div class="linea-kumite linea-izquierda"></div>
                                         <div class="linea-kumite linea-derecha"></div>
-                                        
-                                        <!-- Texto superpuesto -->
-                                        <div id="texto-tatami-${i}" class="relative z-10 text-white text-center text-shadow font-semibold text-xs sm:text-sm w-full px-1 leading-relaxed break-words">
-                                        </div>
+                                        <div id="texto-tatami-${i}" class="relative z-10 text-white text-center text-shadow font-semibold text-xs sm:text-sm w-full px-1 leading-relaxed break-words"></div>
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- Controles Inferiores de cada Tatami -->
                             <div class="inputs-container p-3 border-t border-gray-200 bg-white space-y-2">
                                 <input type="text" id="input-ordenador-${i}" data-target="${i}" placeholder="💻 Ordenador" class="tatami-input w-full border border-gray-300 rounded px-2.5 py-1.5 text-xs sm:text-sm focus:ring-2 focus:ring-blue-500 outline-none">
                                 <input type="text" id="input-jefe-${i}" data-target="${i}" placeholder="📋 Jefe de Tatami" class="tatami-input w-full border border-gray-300 rounded px-2.5 py-1.5 text-xs sm:text-sm focus:ring-2 focus:ring-blue-500 outline-none">
@@ -277,17 +262,14 @@
                     document.getElementById(`slot-${i}`).innerHTML = tarjetaHTML;
                     actualizarTextoTatami(i);
                 }
-                
-                // Al generar nuevos tatamis, comprobar tachados
                 checkStaffCrossOut();
             }
 
-            // 5. Escuchar inputs para actualizar gráficos y lista de personal
             captureArea.addEventListener('input', (e) => {
                 if (e.target.classList.contains('tatami-input')) {
                     const id = e.target.getAttribute('data-target');
                     actualizarTextoTatami(id);
-                    checkStaffCrossOut(); // Llama a la comprobación de tachado en tiempo real
+                    checkStaffCrossOut();
                 }
             });
 
@@ -300,7 +282,6 @@
                 if (ordenador) lineas.push(`💻 ${ordenador}`);
                 if (jefe) lineas.push(`📋 ${jefe}`);
                 if (staff) {
-                    // Si hay varios nombres separados por comas en el staff, se ponen en líneas nuevas
                     const staffFormat = staff.split(',').map(s => s.trim()).join('<br>');
                     lineas.push(staffFormat);
                 }
@@ -311,16 +292,96 @@
                 }
             }
 
-            // 6. Descarga de Imagen
+            function abrirModal() {
+                miniGrid.innerHTML = '';
+                
+                // Generar los 16 mini-slots y leer el estado actual del lienzo principal
+                for (let i = 1; i <= 16; i++) {
+                    const miniSlot = document.createElement('div');
+                    miniSlot.className = 'mini-slot bg-white border-2 border-dashed border-gray-300 h-16 sm:h-20 rounded-lg flex items-center justify-center p-1 transition-colors';
+                    miniSlot.dataset.slotId = i;
+
+                    const mainSlot = document.getElementById(`slot-${i}`);
+                    const tatami = mainSlot.querySelector('.tarjeta-tatami');
+                    
+                    if (tatami) {
+                        const tatamiId = tatami.getAttribute('data-id');
+                        const miniTatami = document.createElement('div');
+                        miniTatami.className = 'mini-tatami bg-blue-600 text-white font-bold text-lg w-full h-full rounded shadow flex items-center justify-center cursor-grab border-2 border-red-600';
+                        miniTatami.dataset.id = tatamiId;
+                        miniTatami.textContent = tatamiId;
+                        miniSlot.appendChild(miniTatami);
+                    }
+
+                    miniGrid.appendChild(miniSlot);
+
+                    // Inicializar Sortable solo dentro del modal
+                    new Sortable(miniSlot, {
+                        group: 'mini-shared',
+                        animation: 150,
+                        ghostClass: 'opacity-40',
+                        fallbackOnBody: true,
+                        swapThreshold: 0.65
+                    });
+                }
+                
+                modalOrdenar.classList.remove('hidden');
+            }
+
+            function cerrarModal() {
+                modalOrdenar.classList.add('hidden');
+            }
+
+            function aplicarNuevoOrden() {
+                const miniSlots = document.querySelectorAll('.mini-slot');
+                const nuevoOrden = [];
+                
+                // Recopilar qué tatami hay en cada mini-slot
+                miniSlots.forEach((ms, index) => {
+                    const mt = ms.querySelector('.mini-tatami');
+                    if (mt) {
+                        nuevoOrden.push({ slotId: index + 1, tatamiId: mt.dataset.id });
+                    }
+                });
+
+                // Extraer todos los tatamis reales del DOM a un fragmento temporal
+                const fragment = document.createDocumentFragment();
+                const tatamisReales = {};
+                
+                document.querySelectorAll('.tarjeta-tatami').forEach(t => {
+                    tatamisReales[t.getAttribute('data-id')] = t;
+                    fragment.appendChild(t); // Los retira de los slots actuales
+                });
+
+                // Repartirlos en los nuevos slots según el modal
+                nuevoOrden.forEach(item => {
+                    const targetSlot = document.getElementById(`slot-${item.slotId}`);
+                    if (tatamisReales[item.tatamiId]) {
+                        targetSlot.appendChild(tatamisReales[item.tatamiId]);
+                    }
+                });
+
+                cerrarModal();
+            }
+
+            // Eventos del modal
+            btnAbrirModal.addEventListener('click', abrirModal);
+            btnCerrarModalX.addEventListener('click', cerrarModal);
+            btnCancelarModal.addEventListener('click', cerrarModal);
+            btnAplicarOrden.addEventListener('click', aplicarNuevoOrden);
+
+            // Cerrar al hacer clic fuera del modal
+            modalOrdenar.addEventListener('click', (e) => {
+                if (e.target === modalOrdenar) cerrarModal();
+            });
+
             btnDescargar.addEventListener('click', async () => {
                 const textoOriginal = btnDescargar.innerHTML;
                 btnDescargar.innerHTML = '📸 Procesando...';
                 btnDescargar.disabled = true;
 
-                // Ocultar inputs y bordes
                 document.body.classList.add('export-mode');
                 
-                // Esperar un instante para que el navegador aplique el CSS
                 await new Promise(resolve => setTimeout(resolve, 300));
 
                 try {
@@ -331,20 +392,24 @@
                     });
 
                     const enlace = document.createElement('a');
-                    enlace.download = 'Distribucion-Tatamis-Karate.png';
+                    enlace.download = 'Distribucion-Pabellon.png';
                     enlace.href = canvas.toDataURL('image/png');
                     enlace.click();
                 } catch (error) {
                     console.error("Error capturando la imagen:", error);
-                    alert("Ocurrió un problema al exportar la foto.");
+                    const btnError = document.getElementById('btn-descargar');
+                    btnError.innerHTML = '❌ Error. Reintentar';
+                    setTimeout(() => { btnError.innerHTML = textoOriginal; }, 3000);
                 } finally {
                     document.body.classList.remove('export-mode');
-                    btnDescargar.innerHTML = textoOriginal;
                     btnDescargar.disabled = false;
+                    if(btnDescargar.innerHTML === '📸 Procesando...') {
+                        btnDescargar.innerHTML = textoOriginal;
+                    }
                 }
             });
 
-            // Iniciar por primera vez
+            // Inicialización general
             inicializarSlots();
             btnGenerar.addEventListener('click', generarTatamis);
             generarTatamis(); 
