@@ -1,4 +1,4 @@
-!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -24,11 +24,6 @@
             text-shadow: 1px 1px 3px rgba(0,0,0,0.8), 0 0 5px rgba(0,0,0,0.6);
         }
 
-        .slot {
-            min-height: 380px;
-            transition: border-color 0.2s, background-color 0.2s;
-        }
-
         .linea-kumite {
             position: absolute;
             width: 4px;
@@ -46,8 +41,6 @@
         }
         
         body.export-mode .slot {
-            border-color: transparent !important;
-            background-color: transparent !important;
             min-height: auto !important; 
         }
         
@@ -123,8 +116,8 @@
 
     <!-- Área de Captura (Esto ES lo que sale en la foto) -->
     <div class="max-w-[1400px] w-full bg-white rounded-2xl shadow-sm p-4 overflow-hidden">
-        <!-- Cuadrícula 4x4 (16 slots fijos) - SIN ARRASTRE -->
-        <div id="capture-area" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 p-4 rounded-xl">
+        <!-- Cuadrícula 4x4 (16 slots fijos) - Fluida y sin bordes en vacíos -->
+        <div id="capture-area" class="grid grid-cols-4 gap-2 md:gap-4 p-2 md:p-4 rounded-xl items-stretch">
             <!-- Los 16 slots se inyectarán aquí -->
         </div>
     </div>
@@ -218,8 +211,8 @@
                 captureArea.innerHTML = '';
                 for (let i = 1; i <= 16; i++) {
                     const slot = document.createElement('div');
-                    // Slots fijos, SIN drag-handle ni SortableJS
-                    slot.className = 'slot border-2 border-dashed border-gray-300 rounded-xl p-2 flex flex-col gap-2 bg-gray-50 bg-opacity-40';
+                    // Slots invisibles, mantienen la estructura fluida
+                    slot.className = 'slot flex flex-col h-full w-full min-h-[120px] sm:min-h-[220px] lg:min-h-[320px]';
                     slot.id = `slot-${i}`;
                     captureArea.appendChild(slot);
                 }
@@ -233,28 +226,28 @@
 
                 for (let i = 1; i <= cantidad; i++) {
                     const tarjetaHTML = `
-                        <div class="tarjeta-tatami bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm flex flex-col h-full" data-id="${i}">
-                            <div class="bg-gray-100 px-3 py-2.5 flex items-center justify-between border-b border-gray-200">
-                                <span class="font-bold text-gray-700 text-sm">Tatami ${i}</span>
+                        <div class="tarjeta-tatami bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm flex flex-col h-full w-full" data-id="${i}">
+                            <div class="bg-gray-100 px-2 md:px-3 py-1.5 md:py-2.5 flex items-center justify-between border-b border-gray-200">
+                                <span class="font-bold text-gray-700 text-[0.65rem] sm:text-sm">Tatami ${i}</span>
                             </div>
 
-                            <div class="p-3 flex-grow flex items-center justify-center bg-gray-50">
-                                <div class="w-full aspect-square max-w-[220px] bg-red-600 rounded-lg p-3 relative shadow-inner">
+                            <div class="p-1.5 md:p-3 flex-grow flex items-center justify-center bg-gray-50">
+                                <div class="w-full aspect-square max-w-[220px] bg-red-600 rounded-lg p-1 md:p-3 relative shadow-inner">
                                     <div class="w-full h-full bg-blue-600 rounded relative flex items-center justify-center overflow-hidden shadow">
                                         <div class="absolute inset-0 flex items-center justify-center pointer-events-none select-none">
-                                            <span class="text-[7rem] font-black text-white opacity-20">${i}</span>
+                                            <span class="text-[2.5rem] sm:text-[4rem] md:text-[7rem] font-black text-white opacity-20">${i}</span>
                                         </div>
                                         <div class="linea-kumite linea-izquierda"></div>
                                         <div class="linea-kumite linea-derecha"></div>
-                                        <div id="texto-tatami-${i}" class="relative z-10 text-white text-center text-shadow font-semibold text-xs sm:text-sm w-full px-1 leading-relaxed break-words"></div>
+                                        <div id="texto-tatami-${i}" class="relative z-10 text-white text-center text-shadow font-semibold text-[0.55rem] sm:text-xs md:text-sm w-full px-0.5 md:px-1 leading-tight sm:leading-relaxed break-words"></div>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="inputs-container p-3 border-t border-gray-200 bg-white space-y-2">
-                                <input type="text" id="input-ordenador-${i}" data-target="${i}" placeholder="💻 Ordenador" class="tatami-input w-full border border-gray-300 rounded px-2.5 py-1.5 text-xs sm:text-sm focus:ring-2 focus:ring-blue-500 outline-none">
-                                <input type="text" id="input-jefe-${i}" data-target="${i}" placeholder="📋 Jefe de Tatami" class="tatami-input w-full border border-gray-300 rounded px-2.5 py-1.5 text-xs sm:text-sm focus:ring-2 focus:ring-blue-500 outline-none">
-                                <input type="text" id="input-staff-${i}" data-target="${i}" placeholder="Staff adicional" class="tatami-input w-full border border-gray-300 rounded px-2.5 py-1.5 text-xs sm:text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                            <div class="inputs-container p-1 md:p-3 border-t border-gray-200 bg-white flex flex-col gap-1 md:gap-2">
+                                <input type="text" id="input-ordenador-${i}" data-target="${i}" placeholder="💻 Ordenador" class="tatami-input w-full border border-gray-300 rounded px-1.5 md:px-2.5 py-1 md:py-1.5 text-[0.6rem] sm:text-xs md:text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                                <input type="text" id="input-jefe-${i}" data-target="${i}" placeholder="📋 Jefe" class="tatami-input w-full border border-gray-300 rounded px-1.5 md:px-2.5 py-1 md:py-1.5 text-[0.6rem] sm:text-xs md:text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                                <input type="text" id="input-staff-${i}" data-target="${i}" placeholder="Staff adicional" class="tatami-input w-full border border-gray-300 rounded px-1.5 md:px-2.5 py-1 md:py-1.5 text-[0.6rem] sm:text-xs md:text-sm focus:ring-2 focus:ring-blue-500 outline-none">
                             </div>
                         </div>
                     `;
